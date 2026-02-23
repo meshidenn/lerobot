@@ -394,6 +394,9 @@ ignore_errors = false
 # ignore_errors = false
 
 [tool.uv]
+default-extras = ["all"]
+# PyTorch cu130 には cmake 等が古い版しかないため、全インデックスから最適版を選ぶ
+index-strategy = "unsafe-best-match"
 # wallx requires transformers==4.49.0 which conflicts with other extras that need >=4.53.0
 conflicts = [
     [
@@ -474,3 +477,12 @@ conflicts = [
         { extra = "all" },
     ],
 ]
+
+# PyTorch CUDA 13 (DGX Spark: CUDA 13.0)
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu130" }
+torchvision = { index = "pytorch-cu130" }
