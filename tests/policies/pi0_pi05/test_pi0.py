@@ -21,10 +21,21 @@ import os
 import pytest
 import torch
 
-# Skip this entire module in CI
+# Skip if transformers or PaliGemma not available (e.g. lerobot[pi] not installed)
+_paligemma_available = False
+try:
+    pytest.importorskip("transformers")
+    from transformers.models.auto import CONFIG_MAPPING as _CONFIG_MAPPING
+    _paligemma_available = _CONFIG_MAPPING is not None and "paligemma" in _CONFIG_MAPPING
+except Exception:
+    pass
+
+# Skip this entire module in CI or when PaliGemma is not available
 pytestmark = pytest.mark.skipif(
-    os.environ.get("CI") == "true" or os.environ.get("GITHUB_ACTIONS") == "true",
-    reason="This test requires local OpenPI installation and is not meant for CI",
+    os.environ.get("CI") == "true"
+    or os.environ.get("GITHUB_ACTIONS") == "true"
+    or not _paligemma_available,
+    reason="Requires local OpenPI/PaliGemma (install lerobot[pi] or compatible transformers)",
 )
 
 from lerobot.policies.factory import make_policy_config  # noqa: E402
