@@ -28,14 +28,15 @@ pre-commit run --all-files
 # Ensure test artifacts are available
 git lfs install && git lfs pull
 
-# Run all tests
-pytest -sv ./tests
+# Run all tests (use python -m pytest with uv so the script is found)
+uv run python -m pytest -sv ./tests
+# Or with venv activated: pytest -sv ./tests
 
 # Run a specific test file
-pytest -sv tests/test_datasets.py
+uv run python -m pytest -sv tests/test_datasets.py
 
 # Run a single test
-pytest -sv tests/test_datasets.py::TestLeRobotDataset::test_load
+uv run python -m pytest -sv tests/test_datasets.py::TestLeRobotDataset::test_load
 ```
 
 ### CLI Entry Points

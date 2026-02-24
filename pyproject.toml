@@ -394,7 +394,6 @@ ignore_errors = false
 # ignore_errors = false
 
 [tool.uv]
-default-extras = ["all"]
 # PyTorch cu130 には cmake 等が古い版しかないため、全インデックスから最適版を選ぶ
 index-strategy = "unsafe-best-match"
 # wallx requires transformers==4.49.0 which conflicts with other extras that need >=4.53.0
