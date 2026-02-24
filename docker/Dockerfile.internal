@@ -18,8 +18,7 @@
 # docker build -f docker/Dockerfile.internal -t lerobot-internal .
 
 # Configure the base image for CI with GPU access
-# TODO(Steven): Bump these versions
-ARG CUDA_VERSION=12.4.1
+ARG CUDA_VERSION=12.8.1
 ARG OS_VERSION=22.04
 FROM nvidia/cuda:${CUDA_VERSION}-base-ubuntu${OS_VERSION}
 
@@ -82,6 +81,12 @@ RUN if [ "$UNBOUND_DEPS" = "true" ]; then \
     sed -i 's/,[[:space:]]*<[0-9\.]*//g' pyproject.toml; \
     echo "Dependencies unbound:" && cat pyproject.toml; \
     fi
+
+# On aarch64, PyPI provides CPU-only torch wheels. Pre-install CUDA-enabled torch
+# from PyTorch's whl index so the subsequent ".[all]" install doesn't overwrite it.
+RUN uv pip install --no-cache \
+    --index-url https://download.pytorch.org/whl/cu128 \
+    "torch>=2.6.0" "torchvision>=0.21.0"
 
 RUN uv pip install --no-cache ".[all]"
 
